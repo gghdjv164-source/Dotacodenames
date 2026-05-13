@@ -2,135 +2,300 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Коднеймс Dota 2 — Онлайн игра</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🎮 Коднеймс Dota 2 | Герои и предметы</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        * { box-sizing: border-box; user-select: none; }
-        body {
-            background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
-            font-family: 'Segoe UI', system-ui;
+        * {
             margin: 0;
-            padding: 20px;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
         }
-        .container { max-width: 1300px; margin: 0 auto; }
-        
-        /* Экраны */
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #1a472a, #0a1f0f);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Контейнер */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Стильные карточки входа */
         .screen {
-            background: rgba(0,0,0,0.7);
-            border-radius: 32px;
-            padding: 30px;
-            margin: 20px auto;
+            background: rgba(20, 15, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 40px 30px;
+            margin: 40px auto;
             max-width: 500px;
             text-align: center;
+            border: 1px solid rgba(255, 215, 120, 0.5);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .screen h2 {
+            font-size: 2rem;
             color: #ffd966;
+            text-shadow: 0 2px 5px #7a4c1a;
+            margin-bottom: 25px;
         }
+
         .screen input {
-            padding: 12px;
+            width: 90%;
+            padding: 15px 20px;
             font-size: 1.2rem;
-            margin: 10px;
-            border-radius: 24px;
-            border: none;
-            text-align: center;
-        }
-        .screen button {
-            background: #b8860b;
+            background: #2e241a;
+            border: 2px solid #d4a259;
+            border-radius: 60px;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 32px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin: 8px;
+            text-align: center;
+            outline: none;
+            transition: 0.2s;
         }
-        
-        /* Игровой интерфейс */
+
+        .screen input:focus {
+            border-color: #ffb347;
+            box-shadow: 0 0 12px #ffb347;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            border: none;
+            padding: 14px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.1s linear;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #e0a800;
+            color: #1e2a0e;
+            box-shadow: 0 4px 0 #7a4c00;
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #7a4c00;
+        }
+
+        .btn-secondary {
+            background: #3a2a1f;
+            color: #ffdb9f;
+            border: 1px solid #b8865b;
+        }
+
+        .btn-solo {
+            background: #2e5e3b;
+            color: #e9ffd6;
+            border: 1px solid #96c280;
+        }
+
+        /* Игровой шапка */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
-            background: #2c1e12e0;
-            padding: 15px 20px;
-            border-radius: 60px;
-            margin-bottom: 20px;
+            gap: 15px;
+            background: #1f1a15cc;
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 80px;
+            margin-bottom: 25px;
+            border: 1px solid #c9aa5b;
         }
-        .team-card {
-            padding: 8px 20px;
+
+        .team-badge {
+            padding: 8px 24px;
             border-radius: 40px;
             font-weight: bold;
+            font-size: 1.2rem;
+            background: #1a1a1a;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
         }
-        .red-team { background: #861f1f; color: white; }
-        .blue-team { background: #1e4985; color: white; }
-        .turn-indicator { background: gold; color: black; padding: 8px 16px; border-radius: 28px; }
+
+        .red-team {
+            background: #a12222;
+            color: #ffc5c5;
+            border-left: 5px solid #ff7b7b;
+        }
+
+        .blue-team {
+            background: #1e5491;
+            color: #cbe5ff;
+            border-left: 5px solid #8bcbff;
+        }
+
+        .turn-card {
+            background: #2c2b1f;
+            padding: 8px 20px;
+            border-radius: 32px;
+            color: #ffdfa5;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Сетка карточек (эффект свечения) */
         .grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            margin: 20px 0;
+            gap: 14px;
+            margin: 25px 0;
         }
+
         .card {
             aspect-ratio: 1 / 0.9;
-            background: #fef2dd;
+            background: linear-gradient(145deg, #fff0db, #fae5c3);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: bold;
-            padding: 8px;
+            font-size: 0.95rem;
+            padding: 10px 6px;
             cursor: pointer;
-            transition: 0.1s;
-            border: 2px solid #e9be7a;
-            color: #2c1c0c;
-            font-size: 0.9rem;
+            transition: 0.08s linear;
+            box-shadow: 0 8px 0 #a57248;
+            border: 2px solid #ffd699;
+            color: #2c1e10;
+            font-weight: 700;
+            word-break: break-word;
         }
-        .card.revealed-red { background: #b12a2a; color: white; border-color: #ffb5b5; }
-        .card.revealed-blue { background: #2a6b9e; color: white; }
-        .card.revealed-neutral { background: #6f5b47; color: #e9ddd0; text-decoration: line-through; }
-        .card.revealed-assassin { background: #1f1a18; color: #db0f0f; }
-        .card.disabled { cursor: not-allowed; opacity: 0.7; }
-        
+
+        .card.revealed-red {
+            background: #c13b3b;
+            color: white;
+            box-shadow: 0 4px 0 #6e1a1a;
+            transform: translateY(2px);
+            border-color: #ffa2a2;
+        }
+
+        .card.revealed-blue {
+            background: #3178b6;
+            color: white;
+            box-shadow: 0 4px 0 #1a446b;
+            transform: translateY(2px);
+        }
+
+        .card.revealed-neutral {
+            background: #7c6a53;
+            color: #d9cfbc;
+            text-decoration: line-through;
+            filter: grayscale(0.15);
+        }
+
+        .card.revealed-assassin {
+            background: #251f1c;
+            color: #e06666;
+            text-shadow: 0 0 3px black;
+            box-shadow: 0 4px 0 #0f0f0f;
+        }
+
+        /* Панель ролей */
+        .role-panel {
+            background: #0c0a08c9;
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0aa6e;
+        }
+
+        .role-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .role-btn {
+            background: #2b2a1f;
+            padding: 12px 20px;
+            border-radius: 60px;
+            border: 1px solid #ca9a5e;
+            color: #ffe1ab;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.05s linear;
+        }
+
+        .role-btn:active {
+            transform: scale(0.96);
+        }
+
+        .players-list {
+            background: #00000066;
+            border-radius: 28px;
+            padding: 12px 18px;
+            font-family: monospace;
+            color: #fee6bf;
+        }
+
         .spymaster-panel {
-            background: #0e0c0ad9;
-            border-radius: 32px;
-            padding: 15px;
+            background: #0b0806e0;
+            border-radius: 36px;
+            padding: 18px;
             margin-top: 20px;
+            border: 2px solid #ffcf8a;
         }
+
         .key-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            background: #00000066;
-            padding: 10px;
-            border-radius: 24px;
+            gap: 8px;
+            background: #00000070;
+            padding: 12px;
+            border-radius: 28px;
         }
+
         .key-cell {
             aspect-ratio: 1;
-            border-radius: 14px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1.6rem;
+            font-weight: 800;
         }
-        .key-red { background: #e33f3f; }
-        .key-blue { background: #3f8ce3; }
-        .key-neutral { background: #8b765f; }
-        .key-assassin { background: #2b2b2b; color: #ff6a6a; }
-        
-        .players-list {
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 28px;
-            font-size: 0.9rem;
+
+        .key-red { background: #e64343; box-shadow: inset 0 0 0 2px #ffbdbd; }
+        .key-blue { background: #4682d9; box-shadow: inset 0 0 0 2px #b9dcff; }
+        .key-neutral { background: #947e60; box-shadow: inset 0 0 0 2px #e7cfaa; }
+        .key-assassin { background: #1f1b18; color: #ff6868; }
+
+        .error-text {
+            color: #ffa098;
+            background: #3a1a1a;
+            padding: 8px;
+            border-radius: 40px;
         }
-        button { background: #b8860b; border: none; padding: 8px 16px; border-radius: 24px; cursor: pointer; }
+
         @media (max-width: 700px) {
-            .grid { gap: 6px; }
-            .card { font-size: 0.65rem; padding: 4px; }
+            .grid { gap: 8px; }
+            .card { font-size: 0.7rem; }
+            .role-btn { padding: 8px 12px; font-size: 0.8rem; }
+        }
+
+        button {
+            font-family: inherit;
         }
     </style>
 </head>
@@ -138,38 +303,48 @@
 <div class="container">
     <!-- Экран входа -->
     <div id="joinScreen" class="screen">
-        <h2>🎮 Коднеймс Dota 2</h2>
-        <input type="text" id="roomIdInput" placeholder="ID комнаты" autocomplete="off">
-        <br>
-        <button onclick="createRoom()">✨ Создать комнату</button>
-        <button onclick="joinRoom()">🚪 Войти в комнату</button>
-        <div id="errorMsg" style="color: #ff8888; margin-top: 15px;"></div>
+        <h2>🎲 Коднеймс: Dota 2</h2>
+        <input type="text" id="roomIdInput" placeholder="ID комнаты (например DOTA)">
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="createRoom()">✨ Создать комнату</button>
+            <button class="btn btn-secondary" onclick="joinRoom()">🚪 Войти в комнату</button>
+            <button class="btn btn-solo" onclick="startSoloMode()">🎮 Играть одному (тест)</button>
+        </div>
+        <div id="errorMsg" style="color: #ffbc7a; margin-top: 20px;"></div>
     </div>
-    
+
     <!-- Игровой экран -->
     <div id="gameScreen" style="display: none;">
         <div class="game-header">
-            <div class="team-card red-team">🔴 КРАСНЫЕ: <span id="redRemaining">0</span></div>
-            <div class="team-card blue-team">🔵 СИНИЕ: <span id="blueRemaining">0</span></div>
-            <div class="turn-indicator" id="turnIndicator">Ход: --</div>
-            <button id="endTurnBtn" style="background:#555;">⏩ Закончить ход</button>
+            <div class="team-badge red-team">🔴 КРАСНЫЕ: <span id="redRemaining">0</span></div>
+            <div class="team-badge blue-team">🔵 СИНИЕ: <span id="blueRemaining">0</span></div>
+            <div class="turn-card" id="turnIndicator">⚡ Ход: --</div>
+            <button id="endTurnBtn" class="btn-secondary" style="background:#5a4a34;">⏩ Закончить ход</button>
         </div>
-        
-        <div id="roleSelection" style="background: #000000aa; border-radius: 28px; padding: 15px; margin-bottom: 15px;">
-            <h3>Выберите роль</h3>
-            <button onclick="selectRole('red', false)">🔴 Игрок (Красные)</button>
-            <button onclick="selectRole('red', true)">👑 Шпион (Красные)</button>
-            <button onclick="selectRole('blue', false)">🔵 Игрок (Синие)</button>
-            <button onclick="selectRole('blue', true)">👑 Шпион (Синие)</button>
-            <div id="playersList" class="players-list" style="margin-top: 15px;"></div>
+
+        <!-- Выбор роли -->
+        <div id="roleSelection" class="role-panel">
+            <h3 style="color:#ffda99;">🔰 Выберите роль</h3>
+            <div class="role-buttons">
+                <button class="role-btn" onclick="selectRole('red', false)">🔴 Игрок (Красные)</button>
+                <button class="role-btn" onclick="selectRole('red', true)">👑 Шпион (Красные)</button>
+                <button class="role-btn" onclick="selectRole('blue', false)">🔵 Игрок (Синие)</button>
+                <button class="role-btn" onclick="selectRole('blue', true)">👑 Шпион (Синие)</button>
+            </div>
+            <div class="players-list" id="playersList">👥 Ожидание игроков...</div>
+            <div style="margin-top: 15px;">
+                <button id="forceStartBtn" class="btn-primary" style="background:#5f8b4c;">⚡ Старт (один игрок / тест)</button>
+            </div>
         </div>
-        
+
+        <!-- Игровое поле -->
         <div id="gameBoard" style="display: none;">
             <div id="gameGrid" class="grid"></div>
         </div>
-        
+
+        <!-- Панель шпиона -->
         <div id="spymasterView" style="display: none;" class="spymaster-panel">
-            <h3>🔐 КЛЮЧ-КАРТА (видите только вы)</h3>
+            <h3 style="color:#ffd966;">🔮 КЛЮЧ-КАРТА (только вы видите)</h3>
             <div id="keyGrid" class="key-grid"></div>
         </div>
     </div>
@@ -178,61 +353,86 @@
 <script>
     let socket = null;
     let currentRoomId = null;
-    let myPlayerId = null;
-    let myRole = null; // { team, isSpymaster }
+    let myRole = null;
     let gameState = null;
-    
+    let soloModeActive = false;
+
     function showError(msg) {
-        document.getElementById('errorMsg').innerText = msg;
-        setTimeout(() => document.getElementById('errorMsg').innerText = '', 3000);
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.innerText = msg;
+        errDiv.classList.add('error-text');
+        setTimeout(() => { errDiv.innerText = ''; errDiv.classList.remove('error-text'); }, 3500);
     }
-    
-    function createRoom() {
-        let roomId = document.getElementById('roomIdInput').value.trim();
-        if (!roomId) roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    // 🔥 Соло-режим (бот-заглушка)
+    function startSoloMode() {
+        soloModeActive = true;
+        // Создаём локальный псевдо-сокет
+        if (socket) socket.disconnect();
         socket = io();
         socket.on('connect', () => {
+            const roomId = 'SOLO_' + Math.random().toString(36).substring(2, 8);
             socket.emit('createRoom', roomId);
         });
-        setupSocketHandlers();
+        setupSocketHandlers(true);
     }
-    
-    function joinRoom() {
+
+    function createRoom() {
+        soloModeActive = false;
         let roomId = document.getElementById('roomIdInput').value.trim();
-        if (!roomId) return showError('Введите ID комнаты');
+        if (!roomId) roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        if (socket) socket.disconnect();
         socket = io();
-        socket.on('connect', () => {
-            socket.emit('joinRoom', roomId);
-        });
-        setupSocketHandlers();
+        socket.on('connect', () => socket.emit('createRoom', roomId));
+        setupSocketHandlers(false);
     }
-    
-    function setupSocketHandlers() {
+
+    function joinRoom() {
+        soloModeActive = false;
+        let roomId = document.getElementById('roomIdInput').value.trim();
+        if (!roomId) return showError('❌ Введите ID комнаты');
+        if (socket) socket.disconnect();
+        socket = io();
+        socket.on('connect', () => socket.emit('joinRoom', roomId));
+        setupSocketHandlers(false);
+    }
+
+    function setupSocketHandlers(isSolo = false) {
         socket.on('roomCreated', (data) => {
             currentRoomId = data.roomId;
-            myPlayerId = data.playerId;
             document.getElementById('joinScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
+            if (isSolo) {
+                // автоматически выбрать роль шпиона для соло
+                setTimeout(() => {
+                    selectRole('red', true);
+                }, 200);
+            }
         });
-        
+
         socket.on('joinedRoom', (data) => {
             currentRoomId = data.roomId;
-            myPlayerId = data.playerId;
             gameState = data.gameState;
             document.getElementById('joinScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             updateRemainingDisplay();
         });
-        
+
         socket.on('playersUpdate', (data) => {
             const playersDiv = document.getElementById('playersList');
-            playersDiv.innerHTML = '<strong>В комнате:</strong><br>';
+            if (!playersDiv) return;
+            if (data.players.length === 0) {
+                playersDiv.innerHTML = '👥 В комнате никого нет';
+                return;
+            }
+            let html = '<strong>👥 В комнате:</strong><br>';
             data.players.forEach(p => {
-                let roleText = p.role.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? 'Шпион' : 'Игрок'}` : '🤔 Не выбрал';
-                playersDiv.innerHTML += `${p.id.substring(0,6)}: ${roleText}<br>`;
+                let roleText = p.role.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? '🤴 Шпион' : '🗡️ Игрок'}` : '🤔 Не выбран';
+                html += `🎭 ${p.id.substring(0,6)}: ${roleText}<br>`;
             });
+            playersDiv.innerHTML = html;
         });
-        
+
         socket.on('gameReady', (data) => {
             gameState = data.gameState;
             document.getElementById('roleSelection').style.display = 'none';
@@ -243,8 +443,9 @@
             }
             renderGameBoard();
             updateRemainingDisplay();
+            updateTurnDisplay();
         });
-        
+
         socket.on('cardRevealed', (data) => {
             if (gameState) {
                 gameState.revealed[data.index] = true;
@@ -258,14 +459,12 @@
                 updateTurnDisplay();
             }
         });
-        
+
         socket.on('turnChanged', (data) => {
-            if (gameState) {
-                gameState.currentTurn = data.turn;
-                updateTurnDisplay();
-            }
+            if (gameState) gameState.currentTurn = data.turn;
+            updateTurnDisplay();
         });
-        
+
         socket.on('gameStateUpdate', (data) => {
             if (gameState) {
                 gameState.revealed = data.revealed;
@@ -274,28 +473,38 @@
                 updateTurnDisplay();
             }
         });
-        
+
         socket.on('gameOver', (data) => {
-            alert(`🏆 Игра окончена! Победила команда ${data.winner.toUpperCase()}! 🏆`);
+            alert(`🏆 ПОБЕДА КОМАНДЫ ${data.winner.toUpperCase()}! 🏆`);
         });
-        
+
         socket.on('error', (msg) => {
             showError(msg);
         });
     }
-    
+
     function selectRole(team, isSpymaster) {
         myRole = { team, isSpymaster };
-        socket.emit('chooseRole', { roomId: currentRoomId, team, isSpymaster });
-        if (isSpymaster) {
-            document.getElementById('spymasterView').style.display = 'block';
+        if (socket) {
+            socket.emit('chooseRole', { roomId: currentRoomId, team, isSpymaster });
+        }
+        // Если соло-режим, показываем ключ мгновенно
+        if (soloModeActive && isSpymaster && gameState) {
+            setTimeout(() => {
+                document.getElementById('spymasterView').style.display = 'block';
+                renderSpymasterKey();
+                document.getElementById('roleSelection').style.display = 'none';
+                document.getElementById('gameBoard').style.display = 'block';
+                renderGameBoard();
+            }, 100);
         }
     }
-    
+
     function renderGameBoard() {
         if (!gameState) return;
-        const grid = document.getElementById('gameGrid');
-        grid.innerHTML = '';
+        const gridDiv = document.getElementById('gameGrid');
+        if (!gridDiv) return;
+        gridDiv.innerHTML = '';
         for (let i = 0; i < gameState.cards.length; i++) {
             const card = document.createElement('div');
             card.className = 'card';
@@ -304,8 +513,11 @@
                 card.style.cursor = 'default';
             } else {
                 card.style.cursor = 'pointer';
-                // Проверяем, может ли игрок открыть карту
+                let canClick = false;
                 if (myRole && !myRole.isSpymaster && gameState.gameActive !== false && gameState.currentTurn === myRole.team) {
+                    canClick = true;
+                }
+                if (canClick && socket) {
                     card.onclick = () => socket.emit('revealCard', { roomId: currentRoomId, index: i });
                 } else {
                     card.style.cursor = 'not-allowed';
@@ -313,43 +525,64 @@
                 }
             }
             card.innerText = gameState.cards[i];
-            grid.appendChild(card);
+            gridDiv.appendChild(card);
         }
     }
-    
+
     function renderSpymasterKey() {
         if (!gameState) return;
-        const keyGrid = document.getElementById('keyGrid');
-        keyGrid.innerHTML = '';
+        const keyContainer = document.getElementById('keyGrid');
+        if (!keyContainer) return;
+        keyContainer.innerHTML = '';
         for (let i = 0; i < gameState.colors.length; i++) {
             const cell = document.createElement('div');
             cell.className = `key-cell key-${gameState.colors[i]}`;
             if (gameState.colors[i] === 'assassin') cell.innerText = '💀';
-            else if (gameState.colors[i] === 'red') cell.innerText = 'R';
-            else if (gameState.colors[i] === 'blue') cell.innerText = 'B';
-            else cell.innerText = 'N';
-            keyGrid.appendChild(cell);
+            else if (gameState.colors[i] === 'red') cell.innerText = '🔴';
+            else if (gameState.colors[i] === 'blue') cell.innerText = '🔵';
+            else cell.innerText = '⚪';
+            keyContainer.appendChild(cell);
         }
     }
-    
+
     function updateRemainingDisplay() {
         if (gameState) {
             document.getElementById('redRemaining').innerText = gameState.redRemaining || 0;
             document.getElementById('blueRemaining').innerText = gameState.blueRemaining || 0;
         }
     }
-    
+
     function updateTurnDisplay() {
         if (gameState) {
-            document.getElementById('turnIndicator').innerHTML = `Ход: ${gameState.currentTurn === 'red' ? '🔴 КРАСНЫЕ' : '🔵 СИНИЕ'}`;
+            document.getElementById('turnIndicator').innerHTML = gameState.currentTurn === 'red' ? '🔴 Ход красных' : '🔵 Ход синих';
         }
     }
-    
-    document.getElementById('endTurnBtn').onclick = () => {
+
+    // Принудительный старт для одиночного тестирования
+    document.getElementById('forceStartBtn')?.addEventListener('click', () => {
+        if (gameState && socket && currentRoomId) {
+            // Для соло или дебага: эмулируем начало игры
+            const mockGameReady = { gameState: gameState };
+            document.getElementById('roleSelection').style.display = 'none';
+            document.getElementById('gameBoard').style.display = 'block';
+            if (myRole && myRole.isSpymaster) {
+                document.getElementById('spymasterView').style.display = 'block';
+                renderSpymasterKey();
+            }
+            renderGameBoard();
+            updateRemainingDisplay();
+            updateTurnDisplay();
+        } else {
+            showError('Сначала войдите или создайте комнату');
+        }
+    });
+
+    document.getElementById('endTurnBtn')?.addEventListener('click', () => {
+        if (!socket || !currentRoomId) return;
         if (gameState && myRole && !myRole.isSpymaster) {
             socket.emit('endTurn', { roomId: currentRoomId });
         }
-    };
+    });
 </script>
 </body>
 </html>
