@@ -1,2 +1,0 @@
-# Dotacodenames
-Dota codenames
