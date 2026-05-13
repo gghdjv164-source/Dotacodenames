@@ -15,18 +15,16 @@
 
         body {
             background: radial-gradient(circle at 10% 20%, #1a472a, #0a1f0f);
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
             min-height: 100vh;
             padding: 20px;
         }
 
-        /* Контейнер */
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Стильные карточки входа */
         .screen {
             background: rgba(20, 15, 10, 0.85);
             backdrop-filter: blur(12px);
@@ -56,7 +54,6 @@
             color: white;
             text-align: center;
             outline: none;
-            transition: 0.2s;
         }
 
         .screen input:focus {
@@ -78,20 +75,19 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.1s linear;
             font-family: inherit;
             font-weight: 600;
+            transition: 0.1s linear;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .btn-primary {
             background: #e0a800;
             color: #1e2a0e;
             box-shadow: 0 4px 0 #7a4c00;
-        }
-
-        .btn-primary:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #7a4c00;
         }
 
         .btn-secondary {
@@ -106,7 +102,6 @@
             border: 1px solid #96c280;
         }
 
-        /* Игровой шапка */
         .game-header {
             display: flex;
             justify-content: space-between;
@@ -127,7 +122,6 @@
             font-weight: bold;
             font-size: 1.2rem;
             background: #1a1a1a;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .red-team {
@@ -151,7 +145,6 @@
             font-size: 1.2rem;
         }
 
-        /* Сетка карточек (эффект свечения) */
         .grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -171,12 +164,10 @@
             font-size: 0.95rem;
             padding: 10px 6px;
             cursor: pointer;
-            transition: 0.08s linear;
             box-shadow: 0 8px 0 #a57248;
             border: 2px solid #ffd699;
             color: #2c1e10;
             font-weight: 700;
-            word-break: break-word;
         }
 
         .card.revealed-red {
@@ -184,7 +175,6 @@
             color: white;
             box-shadow: 0 4px 0 #6e1a1a;
             transform: translateY(2px);
-            border-color: #ffa2a2;
         }
 
         .card.revealed-blue {
@@ -198,17 +188,13 @@
             background: #7c6a53;
             color: #d9cfbc;
             text-decoration: line-through;
-            filter: grayscale(0.15);
         }
 
         .card.revealed-assassin {
             background: #251f1c;
             color: #e06666;
-            text-shadow: 0 0 3px black;
-            box-shadow: 0 4px 0 #0f0f0f;
         }
 
-        /* Панель ролей */
         .role-panel {
             background: #0c0a08c9;
             backdrop-filter: blur(12px);
@@ -233,7 +219,6 @@
             color: #ffe1ab;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.05s linear;
         }
 
         .role-btn:active {
@@ -244,7 +229,6 @@
             background: #00000066;
             border-radius: 28px;
             padding: 12px 18px;
-            font-family: monospace;
             color: #fee6bf;
         }
 
@@ -273,12 +257,11 @@
             justify-content: center;
             font-weight: bold;
             font-size: 1.6rem;
-            font-weight: 800;
         }
 
-        .key-red { background: #e64343; box-shadow: inset 0 0 0 2px #ffbdbd; }
-        .key-blue { background: #4682d9; box-shadow: inset 0 0 0 2px #b9dcff; }
-        .key-neutral { background: #947e60; box-shadow: inset 0 0 0 2px #e7cfaa; }
+        .key-red { background: #e64343; }
+        .key-blue { background: #4682d9; }
+        .key-neutral { background: #947e60; }
         .key-assassin { background: #1f1b18; color: #ff6868; }
 
         .error-text {
@@ -286,34 +269,28 @@
             background: #3a1a1a;
             padding: 8px;
             border-radius: 40px;
+            margin-top: 15px;
         }
 
         @media (max-width: 700px) {
             .grid { gap: 8px; }
             .card { font-size: 0.7rem; }
-            .role-btn { padding: 8px 12px; font-size: 0.8rem; }
-        }
-
-        button {
-            font-family: inherit;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Экран входа -->
     <div id="joinScreen" class="screen">
         <h2>🎲 Коднеймс: Dota 2</h2>
         <input type="text" id="roomIdInput" placeholder="ID комнаты (например DOTA)">
         <div class="btn-group">
             <button class="btn btn-primary" onclick="createRoom()">✨ Создать комнату</button>
             <button class="btn btn-secondary" onclick="joinRoom()">🚪 Войти в комнату</button>
-            <button class="btn btn-solo" onclick="startSoloMode()">🎮 Играть одному (тест)</button>
+            <button class="btn btn-solo" onclick="startSoloMode()">🎮 Тест-режим (играть одному)</button>
         </div>
-        <div id="errorMsg" style="color: #ffbc7a; margin-top: 20px;"></div>
+        <div id="errorMsg"></div>
     </div>
 
-    <!-- Игровой экран -->
     <div id="gameScreen" style="display: none;">
         <div class="game-header">
             <div class="team-badge red-team">🔴 КРАСНЫЕ: <span id="redRemaining">0</span></div>
@@ -322,7 +299,6 @@
             <button id="endTurnBtn" class="btn-secondary" style="background:#5a4a34;">⏩ Закончить ход</button>
         </div>
 
-        <!-- Выбор роли -->
         <div id="roleSelection" class="role-panel">
             <h3 style="color:#ffda99;">🔰 Выберите роль</h3>
             <div class="role-buttons">
@@ -332,19 +308,15 @@
                 <button class="role-btn" onclick="selectRole('blue', true)">👑 Шпион (Синие)</button>
             </div>
             <div class="players-list" id="playersList">👥 Ожидание игроков...</div>
-            <div style="margin-top: 15px;">
-                <button id="forceStartBtn" class="btn-primary" style="background:#5f8b4c;">⚡ Старт (один игрок / тест)</button>
-            </div>
+            <button id="forceStartBtn" class="btn-primary" style="background:#5f8b4c; margin-top:15px;">🚀 Принудительный старт</button>
         </div>
 
-        <!-- Игровое поле -->
         <div id="gameBoard" style="display: none;">
             <div id="gameGrid" class="grid"></div>
         </div>
 
-        <!-- Панель шпиона -->
         <div id="spymasterView" style="display: none;" class="spymaster-panel">
-            <h3 style="color:#ffd966;">🔮 КЛЮЧ-КАРТА (только вы видите)</h3>
+            <h3 style="color:#ffd966;">🔮 КЛЮЧ-КАРТА (только вы)</h3>
             <div id="keyGrid" class="key-grid"></div>
         </div>
     </div>
@@ -355,59 +327,134 @@
     let currentRoomId = null;
     let myRole = null;
     let gameState = null;
-    let soloModeActive = false;
 
     function showError(msg) {
         const errDiv = document.getElementById('errorMsg');
-        errDiv.innerText = msg;
-        errDiv.classList.add('error-text');
-        setTimeout(() => { errDiv.innerText = ''; errDiv.classList.remove('error-text'); }, 3500);
+        errDiv.innerHTML = `<div class="error-text">❌ ${msg}</div>`;
+        setTimeout(() => { errDiv.innerHTML = ''; }, 4000);
     }
 
-    // 🔥 Соло-режим (бот-заглушка)
+    // 🔥 ТЕСТОВЫЙ РЕЖИМ (создаёт фейковую игру локально)
     function startSoloMode() {
-        soloModeActive = true;
-        // Создаём локальный псевдо-сокет
-        if (socket) socket.disconnect();
-        socket = io();
-        socket.on('connect', () => {
-            const roomId = 'SOLO_' + Math.random().toString(36).substring(2, 8);
-            socket.emit('createRoom', roomId);
-        });
-        setupSocketHandlers(true);
+        // Отключаемся от сервера, если были подключены
+        if (socket) {
+            socket.disconnect();
+        }
+        
+        // Скрываем экран входа
+        document.getElementById('joinScreen').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'block';
+        
+        // Генерируем тестовые данные
+        const testHeroes = [
+            "Pudge", "Invoker", "Crystal Maiden", "Axe", "Anti-Mage",
+            "Blink Dagger", "Black King Bar", "Aghanim", "Zeus", "Lina",
+            "Windranger", "Shadow Blade", "Force Staff", "Ursa", "Juggernaut",
+            "Techies", "Phantom Assassin", "Eul's Scepter", "Lion", "Queen of Pain",
+            "Slark", "Monkey King Bar", "Heart", "Butterfly", "Radiance"
+        ];
+        
+        const testColors = [
+            "red", "red", "blue", "blue", "red",
+            "neutral", "red", "assassin", "blue", "red",
+            "neutral", "blue", "red", "neutral", "blue",
+            "red", "blue", "neutral", "red", "blue",
+            "neutral", "red", "blue", "neutral", "red"
+        ];
+        
+        gameState = {
+            cards: testHeroes,
+            colors: testColors,
+            revealed: new Array(25).fill(false),
+            currentTurn: "red",
+            gameActive: true,
+            redRemaining: testColors.filter(c => c === "red").length,
+            blueRemaining: testColors.filter(c => c === "blue").length
+        };
+        
+        // Показываем выбор роли, но сразу предлагаем старт
+        document.getElementById('roleSelection').style.display = 'block';
+        document.getElementById('gameBoard').style.display = 'none';
+        document.getElementById('spymasterView').style.display = 'none';
+        
+        // Обновляем счётчики
+        updateRemainingDisplay();
+        updateTurnDisplay();
+        
+        // Для теста создаём фейковый socket, чтобы кнопки не падали
+        socket = {
+            emit: (event, data) => {
+                if (event === 'revealCard') {
+                    // Эмулируем открытие карты локально
+                    const idx = data.index;
+                    if (!gameState.revealed[idx] && gameState.gameActive) {
+                        const color = gameState.colors[idx];
+                        gameState.revealed[idx] = true;
+                        
+                        if (color === "assassin") {
+                            gameState.gameActive = false;
+                            alert("💀 Убийца! Игра окончена!");
+                        } else if (color === "red") {
+                            gameState.redRemaining--;
+                            if (gameState.redRemaining === 0) {
+                                gameState.gameActive = false;
+                                alert("🏆 ПОБЕДА КРАСНЫХ!");
+                            }
+                        } else if (color === "blue") {
+                            gameState.blueRemaining--;
+                            if (gameState.blueRemaining === 0) {
+                                gameState.gameActive = false;
+                                alert("🏆 ПОБЕДА СИНИХ!");
+                            }
+                        } else if (color === "neutral") {
+                            gameState.currentTurn = gameState.currentTurn === "red" ? "blue" : "red";
+                        }
+                        
+                        renderGameBoard();
+                        updateRemainingDisplay();
+                        updateTurnDisplay();
+                    }
+                }
+                if (event === 'endTurn') {
+                    gameState.currentTurn = gameState.currentTurn === "red" ? "blue" : "red";
+                    updateTurnDisplay();
+                }
+                if (event === 'chooseRole') {
+                    myRole = { team: data.team, isSpymaster: data.isSpymaster };
+                    if (myRole.isSpymaster) {
+                        document.getElementById('spymasterView').style.display = 'block';
+                        renderSpymasterKey();
+                    }
+                }
+            }
+        };
+        
+        showError("✅ ТЕСТОВЫЙ РЕЖИМ: нажмите 'Принудительный старт'");
     }
-
+    
     function createRoom() {
-        soloModeActive = false;
+        if (socket) socket.disconnect();
         let roomId = document.getElementById('roomIdInput').value.trim();
         if (!roomId) roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-        if (socket) socket.disconnect();
         socket = io();
         socket.on('connect', () => socket.emit('createRoom', roomId));
-        setupSocketHandlers(false);
+        setupSocketHandlers();
     }
 
     function joinRoom() {
-        soloModeActive = false;
         let roomId = document.getElementById('roomIdInput').value.trim();
-        if (!roomId) return showError('❌ Введите ID комнаты');
+        if (!roomId) return showError('Введите ID комнаты');
         if (socket) socket.disconnect();
         socket = io();
         socket.on('connect', () => socket.emit('joinRoom', roomId));
-        setupSocketHandlers(false);
+        setupSocketHandlers();
     }
 
-    function setupSocketHandlers(isSolo = false) {
+    function setupSocketHandlers() {
         socket.on('roomCreated', (data) => {
             currentRoomId = data.roomId;
             document.getElementById('joinScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
-            if (isSolo) {
-                // автоматически выбрать роль шпиона для соло
-                setTimeout(() => {
-                    selectRole('red', true);
-                }, 200);
-            }
         });
 
         socket.on('joinedRoom', (data) => {
@@ -421,13 +468,13 @@
         socket.on('playersUpdate', (data) => {
             const playersDiv = document.getElementById('playersList');
             if (!playersDiv) return;
-            if (data.players.length === 0) {
+            if (!data.players || data.players.length === 0) {
                 playersDiv.innerHTML = '👥 В комнате никого нет';
                 return;
             }
             let html = '<strong>👥 В комнате:</strong><br>';
             data.players.forEach(p => {
-                let roleText = p.role.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? '🤴 Шпион' : '🗡️ Игрок'}` : '🤔 Не выбран';
+                let roleText = p.role?.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? '🤴 Шпион' : '🗡️ Игрок'}` : '🤔 Не выбран';
                 html += `🎭 ${p.id.substring(0,6)}: ${roleText}<br>`;
             });
             playersDiv.innerHTML = html;
@@ -485,18 +532,12 @@
 
     function selectRole(team, isSpymaster) {
         myRole = { team, isSpymaster };
-        if (socket) {
+        if (socket && socket.emit) {
             socket.emit('chooseRole', { roomId: currentRoomId, team, isSpymaster });
         }
-        // Если соло-режим, показываем ключ мгновенно
-        if (soloModeActive && isSpymaster && gameState) {
-            setTimeout(() => {
-                document.getElementById('spymasterView').style.display = 'block';
-                renderSpymasterKey();
-                document.getElementById('roleSelection').style.display = 'none';
-                document.getElementById('gameBoard').style.display = 'block';
-                renderGameBoard();
-            }, 100);
+        if (isSpymaster && gameState) {
+            document.getElementById('spymasterView').style.display = 'block';
+            renderSpymasterKey();
         }
     }
 
@@ -517,11 +558,10 @@
                 if (myRole && !myRole.isSpymaster && gameState.gameActive !== false && gameState.currentTurn === myRole.team) {
                     canClick = true;
                 }
-                if (canClick && socket) {
+                if (canClick && socket && socket.emit) {
                     card.onclick = () => socket.emit('revealCard', { roomId: currentRoomId, index: i });
                 } else {
                     card.style.cursor = 'not-allowed';
-                    card.classList.add('disabled');
                 }
             }
             card.innerText = gameState.cards[i];
@@ -558,11 +598,9 @@
         }
     }
 
-    // Принудительный старт для одиночного тестирования
+    // Принудительный старт
     document.getElementById('forceStartBtn')?.addEventListener('click', () => {
-        if (gameState && socket && currentRoomId) {
-            // Для соло или дебага: эмулируем начало игры
-            const mockGameReady = { gameState: gameState };
+        if (gameState) {
             document.getElementById('roleSelection').style.display = 'none';
             document.getElementById('gameBoard').style.display = 'block';
             if (myRole && myRole.isSpymaster) {
@@ -570,16 +608,13 @@
                 renderSpymasterKey();
             }
             renderGameBoard();
-            updateRemainingDisplay();
-            updateTurnDisplay();
         } else {
-            showError('Сначала войдите или создайте комнату');
+            showError('Сначала создайте комнату или войдите в тестовый режим');
         }
     });
 
     document.getElementById('endTurnBtn')?.addEventListener('click', () => {
-        if (!socket || !currentRoomId) return;
-        if (gameState && myRole && !myRole.isSpymaster) {
+        if (socket && socket.emit && currentRoomId && gameState && myRole && !myRole.isSpymaster) {
             socket.emit('endTurn', { roomId: currentRoomId });
         }
     });
