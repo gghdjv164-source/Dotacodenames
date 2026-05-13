@@ -145,6 +145,16 @@
             font-size: 1.2rem;
         }
 
+        .room-id-badge {
+            background: #00000099;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #ffd966;
+            letter-spacing: 1px;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -272,6 +282,16 @@
             margin-top: 15px;
         }
 
+        .info-message {
+            background: #1a3a2a;
+            border-left: 4px solid #ffd966;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 15px 0;
+            color: #ffefb9;
+            font-weight: bold;
+        }
+
         @media (max-width: 700px) {
             .grid { gap: 8px; }
             .card { font-size: 0.7rem; }
@@ -293,6 +313,7 @@
 
     <div id="gameScreen" style="display: none;">
         <div class="game-header">
+            <div class="room-id-badge" id="roomIdDisplay">🏠 Комната: ---</div>
             <div class="team-badge red-team">🔴 КРАСНЫЕ: <span id="redRemaining">0</span></div>
             <div class="team-badge blue-team">🔵 СИНИЕ: <span id="blueRemaining">0</span></div>
             <div class="turn-card" id="turnIndicator">⚡ Ход: --</div>
@@ -303,9 +324,9 @@
             <h3 style="color:#ffda99;">🔰 Выберите роль</h3>
             <div class="role-buttons">
                 <button class="role-btn" onclick="selectRole('red', false)">🔴 Игрок (Красные)</button>
-                <button class="role-btn" onclick="selectRole('red', true)">👑 Шпион (Красные)</button>
+                <button class="role-btn" onclick="selectRole('red', true)">👑 Командир (Красные)</button>
                 <button class="role-btn" onclick="selectRole('blue', false)">🔵 Игрок (Синие)</button>
-                <button class="role-btn" onclick="selectRole('blue', true)">👑 Шпион (Синие)</button>
+                <button class="role-btn" onclick="selectRole('blue', true)">👑 Командир (Синие)</button>
             </div>
             <div class="players-list" id="playersList">👥 Ожидание игроков...</div>
             <button id="forceStartBtn" class="btn-primary" style="background:#5f8b4c; margin-top:15px;">🚀 Принудительный старт</button>
@@ -316,7 +337,7 @@
         </div>
 
         <div id="spymasterView" style="display: none;" class="spymaster-panel">
-            <h3 style="color:#ffd966;">🔮 КЛЮЧ-КАРТА (только вы)</h3>
+            <h3 style="color:#ffd966;">🔮 КЛЮЧ-КАРТА (только командир)</h3>
             <div id="keyGrid" class="key-grid"></div>
         </div>
     </div>
@@ -334,18 +355,22 @@
         setTimeout(() => { errDiv.innerHTML = ''; }, 4000);
     }
 
-    // 🔥 ТЕСТОВЫЙ РЕЖИМ (создаёт фейковую игру локально)
+    function showInfo(msg) {
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.innerHTML = `<div class="info-message">ℹ️ ${msg}</div>`;
+        setTimeout(() => { errDiv.innerHTML = ''; }, 5000);
+    }
+
+    // ТЕСТОВЫЙ РЕЖИМ
     function startSoloMode() {
-        // Отключаемся от сервера, если были подключены
         if (socket) {
             socket.disconnect();
         }
         
-        // Скрываем экран входа
         document.getElementById('joinScreen').style.display = 'none';
         document.getElementById('gameScreen').style.display = 'block';
+        document.getElementById('roomIdDisplay').innerHTML = '🏠 Комната: ТЕСТОВЫЙ РЕЖИМ';
         
-        // Генерируем тестовые данные
         const testHeroes = [
             "Pudge", "Invoker", "Crystal Maiden", "Axe", "Anti-Mage",
             "Blink Dagger", "Black King Bar", "Aghanim", "Zeus", "Lina",
@@ -372,20 +397,16 @@
             blueRemaining: testColors.filter(c => c === "blue").length
         };
         
-        // Показываем выбор роли, но сразу предлагаем старт
         document.getElementById('roleSelection').style.display = 'block';
         document.getElementById('gameBoard').style.display = 'none';
         document.getElementById('spymasterView').style.display = 'none';
         
-        // Обновляем счётчики
         updateRemainingDisplay();
         updateTurnDisplay();
         
-        // Для теста создаём фейковый socket, чтобы кнопки не падали
         socket = {
             emit: (event, data) => {
                 if (event === 'revealCard') {
-                    // Эмулируем открытие карты локально
                     const idx = data.index;
                     if (!gameState.revealed[idx] && gameState.gameActive) {
                         const color = gameState.colors[idx];
@@ -429,25 +450,37 @@
             }
         };
         
-        showError("✅ ТЕСТОВЫЙ РЕЖИМ: нажмите 'Принудительный старт'");
+        showInfo("✅ ТЕСТОВЫЙ РЕЖИМ: нажмите 'Принудительный старт'");
     }
     
     function createRoom() {
         if (socket) socket.disconnect();
         let roomId = document.getElementById('roomIdInput').value.trim();
         if (!roomId) roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
         socket = io();
-        socket.on('connect', () => socket.emit('createRoom', roomId));
+        socket.on('connect', () => {
+            socket.emit('createRoom', roomId);
+        });
         setupSocketHandlers();
+        
+        // Показываем ID комнаты сразу (будет обновлено после подтверждения)
+        document.getElementById('roomIdDisplay').innerHTML = `🏠 Комната: ${roomId} (создание...)`;
+        showInfo(`🆔 Создаётся комната: ${roomId}`);
     }
 
     function joinRoom() {
         let roomId = document.getElementById('roomIdInput').value.trim();
         if (!roomId) return showError('Введите ID комнаты');
+        
         if (socket) socket.disconnect();
         socket = io();
-        socket.on('connect', () => socket.emit('joinRoom', roomId));
+        socket.on('connect', () => {
+            socket.emit('joinRoom', roomId);
+        });
         setupSocketHandlers();
+        
+        document.getElementById('roomIdDisplay').innerHTML = `🏠 Комната: ${roomId} (подключение...)`;
     }
 
     function setupSocketHandlers() {
@@ -455,6 +488,8 @@
             currentRoomId = data.roomId;
             document.getElementById('joinScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('roomIdDisplay').innerHTML = `🏠 Комната: ${data.roomId}`;
+            showInfo(`✅ Комната "${data.roomId}" создана! Отправьте этот ID друзьям.`);
         });
 
         socket.on('joinedRoom', (data) => {
@@ -462,7 +497,9 @@
             gameState = data.gameState;
             document.getElementById('joinScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('roomIdDisplay').innerHTML = `🏠 Комната: ${data.roomId}`;
             updateRemainingDisplay();
+            showInfo(`✅ Вы вошли в комнату "${data.roomId}"`);
         });
 
         socket.on('playersUpdate', (data) => {
@@ -474,7 +511,7 @@
             }
             let html = '<strong>👥 В комнате:</strong><br>';
             data.players.forEach(p => {
-                let roleText = p.role?.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? '🤴 Шпион' : '🗡️ Игрок'}` : '🤔 Не выбран';
+                let roleText = p.role?.team ? `${p.role.team === 'red' ? '🔴' : '🔵'} ${p.role.isSpymaster ? '👑 Командир' : '🗡️ Игрок'}` : '🤔 Не выбран';
                 html += `🎭 ${p.id.substring(0,6)}: ${roleText}<br>`;
             });
             playersDiv.innerHTML = html;
@@ -491,6 +528,7 @@
             renderGameBoard();
             updateRemainingDisplay();
             updateTurnDisplay();
+            showInfo("🎮 Игра началась! Командир даёт подсказки.");
         });
 
         socket.on('cardRevealed', (data) => {
@@ -539,6 +577,7 @@
             document.getElementById('spymasterView').style.display = 'block';
             renderSpymasterKey();
         }
+        showInfo(`Вы выбрали: ${team === 'red' ? '🔴 Красных' : '🔵 Синих'} — ${isSpymaster ? 'Командир 👑' : 'Игрок 🗡️'}`);
     }
 
     function renderGameBoard() {
@@ -598,7 +637,6 @@
         }
     }
 
-    // Принудительный старт
     document.getElementById('forceStartBtn')?.addEventListener('click', () => {
         if (gameState) {
             document.getElementById('roleSelection').style.display = 'none';
@@ -608,6 +646,7 @@
                 renderSpymasterKey();
             }
             renderGameBoard();
+            showInfo("🚀 Игра принудительно запущена!");
         } else {
             showError('Сначала создайте комнату или войдите в тестовый режим');
         }
@@ -616,6 +655,7 @@
     document.getElementById('endTurnBtn')?.addEventListener('click', () => {
         if (socket && socket.emit && currentRoomId && gameState && myRole && !myRole.isSpymaster) {
             socket.emit('endTurn', { roomId: currentRoomId });
+            showInfo("⏩ Ход передан соперникам");
         }
     });
 </script>
